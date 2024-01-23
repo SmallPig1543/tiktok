@@ -5,4 +5,8 @@ const (
 	ErrorVideoUpload
 	ErrorGetUrl
 	ErrorVideoNotExist
+	InValidVideo
+	InValidCover
+	SaveVideoFail
+	SaveCoverFail
 )

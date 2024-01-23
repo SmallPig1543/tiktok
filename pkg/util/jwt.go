@@ -51,13 +51,10 @@ func ParseToken(token string) (*Claims, bool, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(constants.JwtSecret), nil
 	})
-
-	if err != nil {
-		return nil, false, err
-	}
-
-	if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
-		return claims, time.Now().Unix() < claims.ExpiresAt, nil
+	if tokenClaims != nil {
+		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+			return claims, true, nil
+		}
 	}
 	return nil, false, err
 }

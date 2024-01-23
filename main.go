@@ -5,7 +5,9 @@ package main
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"tiktok/config"
+	"tiktok/dal/cache"
 	"tiktok/dal/db"
+	"tiktok/dal/es"
 	"tiktok/pkg/util"
 )
 
@@ -13,10 +15,13 @@ func init() {
 	util.InitLog()
 	config.InitConfig()
 	dao.InitMySQL()
+	cache.LinkRedis()
+	es.LinkEs()
 	util.OssInit()
 }
 func main() {
-	h := server.Default(server.WithHostPorts("localhost:10001"))
+	h := server.Default(server.WithHostPorts("localhost:10001"),
+		server.WithMaxRequestBodySize(419430400))
 	register(h)
 	h.Spin()
 }

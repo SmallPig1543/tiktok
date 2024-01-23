@@ -34,11 +34,6 @@ func _loginMw() []app.HandlerFunc {
 	return nil
 }
 
-func _mfaloginMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _registerMw() []app.HandlerFunc {
 	// your code...
 	return nil
@@ -46,7 +41,9 @@ func _registerMw() []app.HandlerFunc {
 
 func _authMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.JWT(),
+	}
 }
 
 func _mfaMw() []app.HandlerFunc {
@@ -71,5 +68,7 @@ func _avatarMw() []app.HandlerFunc {
 
 func _avataruploadMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.JWT(),
+	}
 }

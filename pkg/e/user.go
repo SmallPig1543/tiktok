@@ -3,6 +3,7 @@ package e
 const (
 	SetPasswordFail int64 = 10000 + iota
 	ErrorGetUserInfo
+	OtpMissing
 	VerifyOtpFailed
 	UpdateTotpStatusFailed
 	ErrorGenerateOTP
@@ -12,5 +13,8 @@ const (
 	ErrorTokenTimeout
 	ErrorGetAvatar
 	ErrorAvatarUpload
+	ErrorOssUpload
 	ErrorComment
+	InvalidAvatar
+	MFABindFail
 )

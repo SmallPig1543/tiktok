@@ -24,13 +24,19 @@ var MsgFlags = map[int64]string{
 	ErrorPassword:          "密码错误",
 	ErrorGetAvatar:         "获取头像失败",
 	ErrorAvatarUpload:      "头像上传失败",
-
+	InvalidAvatar:          "头像格式不符",
+	ErrorOssUpload:         "云端上传出错",
+	MFABindFail:            "MFA认证失败",
+	OtpMissing:             "缺少otp",
 	//video
 	ErrorVideoOpen:     "视频打开失败",
 	ErrorVideoUpload:   "视频上传失败",
 	ErrorGetUrl:        "获取视频url失败",
 	ErrorVideoNotExist: "视频不存在",
-
+	InValidVideo:       "视频格式不符要求",
+	InValidCover:       "封面不符要求",
+	SaveVideoFail:      "视频保持本地失败",
+	SaveCoverFail:      "封面保持本地失败",
 	//comment
 	ErrorComment: "评论失败",
 

@@ -30,6 +30,28 @@ func GetURL(key string) (string, error) {
 	return signedGetURL, nil
 }
 
+func CoverUpload(FileName string) (string, error) {
+	client, err := oss.New(conf.OssEndPoint, conf.OssAccessKeyId, conf.OssAccessKeySecret)
+	if err != nil {
+		return "", errors.New("oss配置错误")
+	}
+	// 获取存储空间
+	bucket, err := client.Bucket(conf.OssBucket)
+	if err != nil {
+		return "", errors.New("oss配置错误")
+	}
+	// 获取扩展名
+	ext := filepath.Ext(FileName)
+	//将发送过来的文件路径转化为oss的存储路径
+	objectKey := "cover/" + uuid.Must(uuid.NewRandom()).String() + ext
+	err = bucket.PutObjectFromFile(objectKey, FileName)
+	if err != nil {
+		fmt.Println(err)
+		return "", errors.New("文件有误")
+	}
+	return objectKey, nil
+}
+
 func AvatarUpload(FileName string) (string, error) {
 	client, err := oss.New(conf.OssEndPoint, conf.OssAccessKeyId, conf.OssAccessKeySecret)
 	if err != nil {

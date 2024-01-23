@@ -9,7 +9,6 @@ import (
 	"tiktok/types"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	user "tiktok/biz/model/user"
 )
 
@@ -78,32 +77,34 @@ func GetInfo(ctx context.Context, c *app.RequestContext) {
 // @router tiktok/user/avatar/upload [PUT]
 func AvatarUpload(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req user.AvatarUploadRequest
-	err = c.BindAndValidate(&req)
+	data, err := c.FormFile("data")
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
-
 	resp := new(user.AvatarUploadResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetUserService()
+	resp, code, err := l.AvatarUpload(ctx, data)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespSuccessWithData(c, resp)
 }
 
 // GetMFAqrcode .
 // @router tiktok/auth/mfa/qrcode [GET]
 func GetMFAqrcode(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req user.GetMFAqrcodeRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
 
 	resp := new(user.GetMFAqrcodeResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetUserService()
+	resp, code, err := l.GetMFAqrcode(ctx)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespSuccessWithData(c, resp)
 }
 
 // MFABind .
@@ -113,11 +114,15 @@ func MFABind(ctx context.Context, c *app.RequestContext) {
 	var req user.MFABindRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
 
-	resp := new(user.MFABindResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetUserService()
+	code, err := l.MFABind(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespSuccess(c)
 }

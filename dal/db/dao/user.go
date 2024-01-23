@@ -38,15 +38,15 @@ func (dao *UserDao) FindUserByUserName(userName string) (user *model.User, err e
 }
 
 func (dao *UserDao) UpdateOtpSecret(user *model.User, secret string, url string) (err error) {
-	err = dao.DB.Model(&user).Update("totp_secret", secret).Error
+	err = dao.DB.Model(&user).Update("otp_secret", secret).Error
 	if err != nil {
 		return err
 	}
-	err = dao.DB.Model(&user).Update("totp_url", url).Error
+	err = dao.DB.Model(&user).Update("otp_url", url).Error
 	return err
 }
 
-func (dao *UserDao) UpdateAvatar(user *model.User, avatarURL string) (err error) {
-	err = dao.DB.Model(&user).Update("avatar_file_name", avatarURL).Error
+func (dao *UserDao) UpdateAvatar(user *model.User, avatarKey string) (err error) {
+	err = dao.DB.Model(&user).Update("avatar_key", avatarKey).Error
 	return
 }

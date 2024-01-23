@@ -7,11 +7,11 @@ import (
 
 type User struct {
 	gorm.Model
-	UserName   string `gorm:"unique"`
-	PassWord   string
-	AvatarKey  string //用key来从oss获取url
-	TotpUrl    string
-	TotpSecret string
+	UserName  string `gorm:"unique"`
+	PassWord  string
+	AvatarKey string //用key来从oss获取url
+	OtpUrl    string
+	OtpSecret string
 }
 
 func (user *User) SetPassword(password string) error {

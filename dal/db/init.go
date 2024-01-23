@@ -19,6 +19,7 @@ func InitMySQL() {
 		panic(err)
 	}
 	_ = db.AutoMigrate(&model.User{})
+	_ = db.AutoMigrate(&model.Video{})
 	DB = db
 }
 
