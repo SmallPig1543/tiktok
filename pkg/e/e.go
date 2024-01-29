@@ -5,6 +5,7 @@ const (
 	ERROR   int64 = 500
 
 	InvalidParams int64 = iota
+	ParamsMissing
 
 	ErrorUserExist
 	ErrorUserNotExist

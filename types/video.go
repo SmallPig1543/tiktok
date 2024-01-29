@@ -21,9 +21,9 @@ func BuildVideo(ctx context.Context, v *model.Video) *video.Video {
 		videoURL, _ = util.GetURL(v.VideoKey)
 	}
 	//从redis获取数据
-	likes := cache.VideoLikes(ctx, v.ID)
-	views := cache.VideoViews(ctx, v.ID)
-	comments := cache.VideoComments(ctx, v.ID)
+	likes := cache.VideoLikes(ctx, strconv.Itoa(int(v.ID)))
+	views := cache.VideoViews(ctx, strconv.Itoa(int(v.ID)))
+	comments, _ := cache.VideoComments(ctx, strconv.Itoa(int(v.ID)))
 	return &video.Video{
 		ID:          strconv.Itoa(int(v.ID)),
 		UID:         strconv.Itoa(int(v.Uid)),

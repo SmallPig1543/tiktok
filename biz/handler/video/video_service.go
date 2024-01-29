@@ -9,7 +9,6 @@ import (
 	"tiktok/types"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	video "tiktok/biz/model/video"
 )
 
@@ -73,12 +72,12 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(video.PublishListResponse)
 	l := service.GetVideoService()
-	resp, code, err, total := l.PublishList(ctx, &req)
+	resp, count, code, err := l.PublishList(ctx, &req)
 	if err != nil {
 		types.RespError(c, code)
 		return
 	}
-	types.RespList(c, resp, total)
+	types.RespList(c, resp, count)
 }
 
 // PopularList .
@@ -88,13 +87,18 @@ func PopularList(ctx context.Context, c *app.RequestContext) {
 	var req video.PopularListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
 
 	resp := new(video.PopularListResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetVideoService()
+	resp, count, code, err := l.PopularList(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespList(c, resp, count)
 }
 
 // Search .
@@ -104,11 +108,16 @@ func Search(ctx context.Context, c *app.RequestContext) {
 	var req video.SearchRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
 
 	resp := new(video.SearchResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetVideoService()
+	resp, count, code, err := l.Search(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespList(c, resp, count)
 }

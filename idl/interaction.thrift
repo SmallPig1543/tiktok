@@ -69,7 +69,7 @@ struct DeleteCommentResponse {
 }
 
 service InteractionService {
-    LikeResponse Like(1: LikeListRequest req) (api.post="tiktok/like/action")
+    LikeResponse Like(1: LikeRequest req) (api.post="tiktok/like/action")
     LikeListResponse LikeList(1: LikeListRequest req) (api.get="tiktok/like/list")
     CommentPublishResponse CommentPublish(1: CommentListRequest req) (api.post="tiktok/comment/publish")
     CommentListResponse CommentList(1: CommentListRequest req) (api.get="tiktok/comment/list")

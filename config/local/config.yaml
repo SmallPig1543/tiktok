@@ -1,18 +1,18 @@
 
 system:
   domain: "tiktok"
-  host: "127.0.0.1"
-  port: "9090"
+  host: "172.19.0.4"
+  port: "10001"
 
 mysql:
   userName: "root"
   mysqlPassword: "123456"
   dbName: "tiktok"
-  dbHost: "127.0.0.1"
+  dbHost: "172.19.0.10"
   dbPort: "3306"
 
 redis:
-  redisHost: "127.0.0.1"
+  redisHost: "172.19.0.2"
   redisPort: "6379"
   redisPassword: "123456"
   redisDbName: 2
@@ -23,16 +23,11 @@ oss:
   OSS_ACCESS_KEY_SECRET: "ABrFBE62QML2oiBeJe0j7QBQm0ADrJ"
   OSS_BUCKET: "videoweb-test"
 
-email:
-  sender: "1424928981@qq.com"
-  password: "yxycmzuiiricbadc"
-  host: "smtp.qq.com"
-  addr: "smtp.qq.com:587"
 
 es:
   esUserName: "elastic"
   esPassword: "elastic"
-  esHost: "127.0.0.1"
+  esHost: "172.19.0.3"
   esPort: "9200"
 
 rabbitmq:

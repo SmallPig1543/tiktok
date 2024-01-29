@@ -36,7 +36,7 @@ func GenerateRefreshToken(uid uint, username string) (accessToken string, err er
 		ID:       uid,
 		UserName: username,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: (time.Now().Add(24 * time.Hour)).Unix(),
+			ExpiresAt: (time.Now().Add(7 * 24 * time.Hour)).Unix(),
 			Issuer:    "tiktok",
 		},
 	}

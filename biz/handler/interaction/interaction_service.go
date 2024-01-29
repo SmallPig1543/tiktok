@@ -4,9 +4,11 @@ package interaction
 
 import (
 	"context"
+	"tiktok/pkg/e"
+	"tiktok/service"
+	"tiktok/types"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	interaction "tiktok/biz/model/interaction"
 )
 
@@ -14,16 +16,19 @@ import (
 // @router tiktok/like/action [POST]
 func Like(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req interaction.LikeListRequest
+	var req interaction.LikeRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
-
-	resp := new(interaction.LikeResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetInteractionService()
+	code, err := l.Like(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespSuccess(c)
 }
 
 // LikeList .
@@ -33,29 +38,38 @@ func LikeList(ctx context.Context, c *app.RequestContext) {
 	var req interaction.LikeListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
 
 	resp := new(interaction.LikeListResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetInteractionService()
+	resp, count, code, err := l.LikeList(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespList(c, resp, count)
 }
 
 // CommentPublish .
 // @router tiktok/comment/publish [POST]
 func CommentPublish(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req interaction.CommentListRequest
+	var req interaction.CommentPublishRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
-
+	l := service.GetInteractionService()
 	resp := new(interaction.CommentPublishResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	resp, code, err := l.Comment(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespSuccessWithData(c, resp)
 }
 
 // CommentList .
@@ -65,13 +79,17 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 	var req interaction.CommentListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
-
+	l := service.GetInteractionService()
 	resp := new(interaction.CommentListResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	resp, count, code, err := l.CommentList(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespList(c, resp, count)
 }
 
 // DeleteComment .
@@ -81,11 +99,14 @@ func DeleteComment(ctx context.Context, c *app.RequestContext) {
 	var req interaction.DeleteCommentRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		types.RespError(c, e.InvalidParams)
 		return
 	}
-
-	resp := new(interaction.DeleteCommentResponse)
-
-	c.JSON(consts.StatusOK, resp)
+	l := service.GetInteractionService()
+	code, err := l.DeleteComment(ctx, &req)
+	if err != nil {
+		types.RespError(c, code)
+		return
+	}
+	types.RespSuccess(c)
 }

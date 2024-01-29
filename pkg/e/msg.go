@@ -5,6 +5,7 @@ var MsgFlags = map[int64]string{
 	ERROR:   "操作失败",
 
 	InvalidParams: "请求参数有误",
+	ParamsMissing: "缺少参数",
 
 	ErrorDataBase: "数据库出错",
 	ErrorRedis:    "redis出错",
@@ -38,10 +39,15 @@ var MsgFlags = map[int64]string{
 	SaveVideoFail:      "视频保持本地失败",
 	SaveCoverFail:      "封面保持本地失败",
 	//comment
-	ErrorComment: "评论失败",
+	ErrorComment:    "评论失败",
+	CommentNotFound: "评论不存在",
 
 	//document
 	ErrorCreateDoc: "创建文档失败",
+
+	//interaction
+	ActionFails:  "操作失败",
+	GetListFails: "获取列表失败",
 }
 
 // GetMsg 获取错误码对应的信息

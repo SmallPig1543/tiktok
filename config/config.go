@@ -12,7 +12,6 @@ type Conf struct {
 	Mysql  `mapstructure:"mysql"`
 	Redis  `mapstructure:"redis"`
 	Oss    `mapstructure:"oss"`
-	Email  `mapstructure:"email"`
 	Es     `mapstructure:"es"`
 }
 
@@ -44,13 +43,6 @@ type Oss struct {
 	OssBucket          string `mapstructure:"OSS_BUCKET"`
 }
 
-type Email struct {
-	Sender   string `mapstructure:"sender"`
-	Password string `mapstructure:"password"`
-	Host     string `mapstructure:"host"`
-	Addr     string `mapstructure:"addr"`
-}
-
 type Es struct {
 	UserName string `mapstructure:"esUserName"`
 	Password string `mapstructure:"esPassword"`
@@ -62,8 +54,8 @@ func InitConfig() {
 	workDir, _ := os.Getwd()
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	filePath := workDir + "/config/local"
-	viper.AddConfigPath(filePath)
+	viper.AddConfigPath(workDir + "/config/local")
+	viper.AddConfigPath(workDir)
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)

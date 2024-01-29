@@ -4,6 +4,7 @@ import (
 	"github.com/olivere/elastic/v7"
 	"tiktok/config"
 	"tiktok/dal/es/model"
+	"tiktok/pkg/util"
 )
 
 var EsClient *elastic.Client
@@ -23,5 +24,7 @@ func LinkEs() {
 	Init()
 }
 func Init() {
-	_ = CreateIndex(model.Video{})
+	if err := CreateIndex(model.Video{}); err != nil {
+		util.LogrusObj.Debug(err)
+	}
 }

@@ -12,7 +12,6 @@ func BuildUser(u *model.User) *user.User {
 	if u.DeletedAt.Valid {
 		deletedAt = u.DeletedAt.Time.Format("2006-01-02 15:04:05")
 	}
-
 	if u.AvatarKey != "" {
 		url, _ = util.GetURL(u.AvatarKey)
 	}

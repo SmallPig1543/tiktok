@@ -11,6 +11,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.5.0
 	github.com/h2non/filetype v1.1.3
+	github.com/hertz-contrib/websocket v0.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/pquerna/otp v1.4.0
 	github.com/redis/go-redis/v9 v9.4.0

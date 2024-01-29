@@ -35,8 +35,8 @@ struct PublishResponse {
 
 struct PublishListRequest {
     1: required string uid
-    2: required i64 page_num
-    3: required i64 page_size
+    2: optional i64 page_num
+    3: optional i64 page_size
 }
 
 struct PublishListResponse {
@@ -44,8 +44,8 @@ struct PublishListResponse {
 }
 
 struct PopularListRequest {
-    1: required i64 page_num
-    2: required i64 page_size
+    1: optional i64 page_num
+    2: optional i64 page_size
 }
 
 struct PopularListResponse {
@@ -54,8 +54,8 @@ struct PopularListResponse {
 
 struct SearchRequest {
     1: required string keyword
-    2: required i64 page_num
-    3: required i64 page_size
+    2: optional i64 page_num
+    3: optional i64 page_size
     4: optional i64 from_date
     5: optional i64 to_date
     6: optional string username

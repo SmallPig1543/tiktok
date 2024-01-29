@@ -2525,7 +2525,7 @@ func (p *DeleteCommentResponse) String() string {
 }
 
 type InteractionService interface {
-	Like(ctx context.Context, req *LikeListRequest) (r *LikeResponse, err error)
+	Like(ctx context.Context, req *LikeRequest) (r *LikeResponse, err error)
 
 	LikeList(ctx context.Context, req *LikeListRequest) (r *LikeListResponse, err error)
 
@@ -2562,7 +2562,7 @@ func (p *InteractionServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *InteractionServiceClient) Like(ctx context.Context, req *LikeListRequest) (r *LikeResponse, err error) {
+func (p *InteractionServiceClient) Like(ctx context.Context, req *LikeRequest) (r *LikeResponse, err error) {
 	var _args InteractionServiceLikeArgs
 	_args.Req = req
 	var _result InteractionServiceLikeResult
@@ -2894,16 +2894,16 @@ func (p *interactionServiceProcessorDeleteComment) Process(ctx context.Context, 
 }
 
 type InteractionServiceLikeArgs struct {
-	Req *LikeListRequest `thrift:"req,1"`
+	Req *LikeRequest `thrift:"req,1"`
 }
 
 func NewInteractionServiceLikeArgs() *InteractionServiceLikeArgs {
 	return &InteractionServiceLikeArgs{}
 }
 
-var InteractionServiceLikeArgs_Req_DEFAULT *LikeListRequest
+var InteractionServiceLikeArgs_Req_DEFAULT *LikeRequest
 
-func (p *InteractionServiceLikeArgs) GetReq() (v *LikeListRequest) {
+func (p *InteractionServiceLikeArgs) GetReq() (v *LikeRequest) {
 	if !p.IsSetReq() {
 		return InteractionServiceLikeArgs_Req_DEFAULT
 	}
@@ -2975,7 +2975,7 @@ ReadStructEndError:
 }
 
 func (p *InteractionServiceLikeArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewLikeListRequest()
+	p.Req = NewLikeRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}

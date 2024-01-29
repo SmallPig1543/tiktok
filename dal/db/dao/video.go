@@ -38,3 +38,17 @@ func (dao *VideoDao) VideoFeed(time time.Time) (list []*model.Video, count int64
 	err = dao.DB.Model(&model.Video{}).Where("created_at > ?", time).Count(&count).Find(&list).Error
 	return
 }
+
+func (dao *VideoDao) FindVideoByVid(vid string) (video *model.Video, err error) {
+	err = dao.DB.Model(&model.Video{}).Where("id = ?", vid).Find(&video).Error
+	return
+}
+
+func (dao *VideoDao) FindVideosById(ids []string, page_num, page_size int64) (videos []*model.Video, count int64, err error) {
+	err = dao.DB.Model(&model.Video{}).Where("id in (?)", ids).
+		Count(&count).
+		Limit(int(page_size)).
+		Offset(int((page_num - 1) * page_size)).
+		Find(&videos).Error
+	return
+}

@@ -5,7 +5,7 @@ import (
 	"tiktok/dal/es/model"
 )
 
-func CreateIndex(model model.EsModel) (err error) {
+func CreateIndex(model model.Video) (err error) {
 	_, err = EsClient.CreateIndex(model.Index()).BodyString(model.Mapping()).Do(context.Background())
 	return
 }

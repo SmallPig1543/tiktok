@@ -11,8 +11,11 @@ import (
 	"strings"
 	"sync"
 	"tiktok/biz/model/video"
+	"tiktok/dal/cache"
 	"tiktok/dal/db/dao"
 	"tiktok/dal/db/model"
+	"tiktok/dal/es/document"
+	esmodel "tiktok/dal/es/model"
 	"tiktok/pkg/ctl"
 	"tiktok/pkg/e"
 	"tiktok/pkg/util"
@@ -104,16 +107,39 @@ func (s *VideoService) Publish(ctx context.Context, req *video.PublishRequest, v
 		code = e.ErrorDataBase
 		return
 	}
+	// 将数据放入es
+	esModel := esmodel.Video{
+		Vid:         v.ID,
+		Uid:         v.Uid,
+		UserName:    v.UserName,
+		Title:       v.Title,
+		Description: v.Description,
+		CreateAt:    v.CreatedAt.Format("2006-01-02 15:04:05"),
+	}
+	if err = document.CreateDocument(esModel, strconv.Itoa(int(v.ID)), ctx); err != nil {
+		util.LogrusObj.Debug(err)
+		code = e.ErrorCreateDoc
+		return
+	}
 	//构建返回结构
 	resp = &video.PublishResponse{Video: types.BuildVideo(ctx, v)}
 	return
 }
 
-func (s *VideoService) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, code int64, err error, total int64) {
+func (s *VideoService) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, count, code int64, err error) {
+	//判断一下参数
+	if req.PageSize == nil {
+		req.PageSize = new(int64)
+		*req.PageSize = 10
+	}
+	if req.PageNum == nil {
+		req.PageNum = new(int64)
+		*req.PageNum = 0
+	}
 	//从数据库中查询
 	videoDao := dao.NewVideoDao(ctx)
 	id, _ := strconv.Atoi(req.UID)
-	videos, total, err := videoDao.VideoList(uint(id), int(req.PageNum), int(req.PageSize))
+	videos, count, err := videoDao.VideoList(uint(id), int(*req.PageNum), int(*req.PageSize))
 	if err != nil {
 		util.LogrusObj.Debug(err)
 		code = e.ErrorDataBase
@@ -121,5 +147,76 @@ func (s *VideoService) PublishList(ctx context.Context, req *video.PublishListRe
 	}
 	//构建返回结构
 	resp = &video.PublishListResponse{Videos: types.BuildVideoList(ctx, videos)}
+	return
+}
+
+func (s *VideoService) PopularList(ctx context.Context, req *video.PopularListRequest) (resp *video.PopularListResponse, count, code int64, err error) {
+	//判断一下参数
+	if req.PageSize == nil {
+		req.PageSize = new(int64)
+		*req.PageSize = 10
+	}
+	if req.PageNum == nil {
+		req.PageNum = new(int64)
+		*req.PageNum = 0
+	}
+
+	//从redis获取vid
+	start := (*req.PageNum - 1) * (*req.PageSize)
+	end := start + (*req.PageSize) - 1
+	list, err := cache.RedisClient.ZRevRange(ctx, "Rank", start, end).Result()
+	if err != nil {
+		util.LogrusObj.Error(err)
+		code = e.ErrorRedis
+		return
+	}
+
+	//从数据库获取数据
+	var data *model.Video
+	videoDao := dao.NewVideoDao(ctx)
+	res := make([]*model.Video, 0)
+	for _, v := range list {
+		data, err = videoDao.FindVideoByVid(v)
+		if err != nil {
+			util.LogrusObj.Error(err)
+			code = e.ErrorDataBase
+			return
+		}
+		res = append(res, data)
+	}
+	resp = &video.PopularListResponse{Videos: types.BuildVideoList(ctx, res)}
+	return
+}
+
+func (s *VideoService) Search(ctx context.Context, req *video.SearchRequest) (resp *video.SearchResponse, count, code int64, err error) {
+	//处理请求参数
+	if req.PageSize == nil {
+		req.PageSize = new(int64)
+		*req.PageSize = 10
+	}
+	if req.PageNum == nil {
+		req.PageNum = new(int64)
+		*req.PageNum = 0
+	}
+	list, err := document.SearchVideo(ctx, req)
+	if err != nil {
+		code = e.ErrorSearchDoc
+		return
+	}
+	//从数据库获取数据
+	res := make([]*model.Video, 0)
+	var data *model.Video
+	videoDao := dao.NewVideoDao(ctx)
+	for _, s := range list {
+		data, err = videoDao.FindVideoByVid(s)
+		if err != nil {
+			util.LogrusObj.Error(err)
+			code = e.ErrorDataBase
+			return
+		}
+		res = append(res, data)
+	}
+	count = int64(len(res))
+	resp = &video.SearchResponse{Videos: types.BuildVideoList(ctx, res)}
 	return
 }

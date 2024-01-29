@@ -27,9 +27,9 @@ func (v Video) Mapping() string {
         "type": "text",
         "analyzer": "ik_smart"
       },
-      "user_name":{
-		"type":"keyword",
-	},
+      "user_name": {
+		    "type": "keyword"
+      },  
       "description": {
         "type": "text",
         "analyzer": "ik_smart"

@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: tiktok
+    ports:
+      - "3305:3306"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.10
+
+  redis:
+    image: redis:7.2.3
+    restart: always
+    ports:
+      - "6378:6379"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.2
+
+  elasticsearch:
+    image: elasticsearch:7.12.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9201:9200"
+      - "9301:9301"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.3
+
+  app:
+    build:
+      context: .
+    ports:
+      - "10001:10001"
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.4
+    depends_on:
+      - mysql
+      - redis
+      - elasticsearch
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

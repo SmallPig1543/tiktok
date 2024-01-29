@@ -20,6 +20,8 @@ func InitMySQL() {
 	}
 	_ = db.AutoMigrate(&model.User{})
 	_ = db.AutoMigrate(&model.Video{})
+	_ = db.AutoMigrate(&model.Comment{})
+	_ = db.AutoMigrate(&model.Follow{})
 	DB = db
 }
 

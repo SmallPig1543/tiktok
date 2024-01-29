@@ -21,7 +21,7 @@ func InitLog() {
 	// 设置输出
 	logger.Out = src
 	// 设置日志级别
-	logger.SetLevel(logrus.InfoLevel)
+	logger.SetLevel(logrus.DebugLevel)
 	// 设置日志格式
 	logger.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat: "2006-01-02 15:04:05",

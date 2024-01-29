@@ -6,7 +6,7 @@ import (
 	"tiktok/dal/es/model"
 )
 
-func CreateDocument(model model.EsModel, id string, ctx context.Context) (err error) {
+func CreateDocument(model model.Video, id string, ctx context.Context) (err error) {
 	_, err = es.EsClient.Index().Index(model.Index()).Id(id).BodyJson(&model).Do(ctx)
 	return
 }

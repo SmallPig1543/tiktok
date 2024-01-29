@@ -50,3 +50,11 @@ func (dao *UserDao) UpdateAvatar(user *model.User, avatarKey string) (err error)
 	err = dao.DB.Model(&user).Update("avatar_key", avatarKey).Error
 	return
 }
+
+func (dao *UserDao) FindUsers(ids []string, page_num, page_size int64) (list []*model.User, count int64, err error) {
+	err = dao.DB.Model(&model.User{}).Where("id in (?)", ids).Count(&count).
+		Limit(int(page_size)).
+		Offset(int((page_num - 1) * page_size)).
+		Find(&list).Error
+	return
+}
