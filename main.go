@@ -22,7 +22,7 @@ func init() {
 }
 func main() {
 	go ws.Manager.Start()
-	h := server.Default(server.WithHostPorts("172.19.0.4:10001"),
+	h := server.Default(server.WithHostPorts("172.19.0.5:10001"),
 		server.WithMaxRequestBodySize(419430400))
 	register(h)
 	h.Spin()

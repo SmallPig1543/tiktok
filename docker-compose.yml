@@ -2,35 +2,77 @@ version: '3'
 
 services:
   mysql:
+    container_name: mysql
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: tiktok
+    volumes:
+      - /home/smallpig/docker/mysql/data:/var/lib/mysql
     ports:
-      - "3305:3306"
+      - "3306:3306"
     networks:
       mynetwork:
         ipv4_address: 172.19.0.10
 
   redis:
+    container_name: redis
     image: redis:7.2.3
-    restart: always
+    volumes:
+      - /home/smallpig/docker/redis/data:/data
     ports:
-      - "6378:6379"
+      - "6379:6379"
     networks:
       mynetwork:
         ipv4_address: 172.19.0.2
 
   elasticsearch:
+    container_name: es
     image: elasticsearch:7.12.0
     environment:
       - discovery.type=single-node
+    volumes:
+      - /home/smallpig/docker/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /home/smallpig/docker/es/data:/usr/share/elasticsearch/data
+      - /home/smallpig/docker/es/plugins:/usr/share/elasticsearch/plugins
     ports:
-      - "9201:9200"
-      - "9301:9301"
+      - "9200:9200"
+      - "9300:9300"
     networks:
       mynetwork:
         ipv4_address: 172.19.0.3
+
+
+  kibana:
+    container_name: kibana
+    image: kibana:7.12.0
+    environment:
+      ELASTICSEARCH_HOSTS: http://localhost:9200
+    volumes:
+      - /home/smallpig/docker/kibana/config:/usr/share/kibana/config
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.4
+
+
+  rabbitmq:
+    image: rabbitmq:3.12.12-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=123456
+    ports:
+      - "5672:5672"  # AMQP
+      - "15672:15672"  # RabbitMQ management UI
+    volumes:
+      - /home/smallpig/docker/rabbitmq/data:/var/lib/rabbitmq
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.6
 
   app:
     build:
@@ -39,11 +81,12 @@ services:
       - "10001:10001"
     networks:
       mynetwork:
-        ipv4_address: 172.19.0.4
+        ipv4_address: 172.19.0.5
     depends_on:
       - mysql
       - redis
       - elasticsearch
+      - rabbitmq
 
 networks:
   mynetwork:

@@ -5,7 +5,6 @@ package main
 import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	handler "tiktok/biz/handler"
-	"tiktok/biz/middleware"
 	"tiktok/service/ws"
 )
 
@@ -14,5 +13,5 @@ func customizedRegister(r *server.Hertz) {
 	r.GET("/ping", handler.Ping)
 
 	// your code ...
-	r.GET("/ws", middleware.JWT(), ws.ServerWs)
+	r.GET("/ws", ws.ServerWs)
 }

@@ -15,7 +15,7 @@ func LinkEs() {
 	client, err := elastic.NewClient(
 		elastic.SetURL(url),
 		elastic.SetSniff(false), //是否开启集群嗅探
-		elastic.SetBasicAuth("elastic", "123456"),
+		elastic.SetBasicAuth(conf.UserName, conf.Password),
 	)
 	if err != nil {
 		panic(err)

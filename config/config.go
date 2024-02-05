@@ -8,11 +8,12 @@ import (
 var Config Conf
 
 type Conf struct {
-	System *System `mapstructure:"system"`
-	Mysql  `mapstructure:"mysql"`
-	Redis  `mapstructure:"redis"`
-	Oss    `mapstructure:"oss"`
-	Es     `mapstructure:"es"`
+	System   *System `mapstructure:"system"`
+	Mysql    `mapstructure:"mysql"`
+	Redis    `mapstructure:"redis"`
+	Oss      `mapstructure:"oss"`
+	Es       `mapstructure:"es"`
+	Rabbitmq `mapstructure:"rabbitmq"`
 }
 
 type System struct {
@@ -48,6 +49,11 @@ type Es struct {
 	Password string `mapstructure:"esPassword"`
 	Host     string `mapstructure:"esHost"`
 	Port     string `mapstructure:"esPort"`
+}
+
+type Rabbitmq struct {
+	RabbitmqUser     string `mapstructure:"rabbitmqUserName"`
+	RabbitmqPassword string `mapstructure:"rabbitmqPassword"`
 }
 
 func InitConfig() {

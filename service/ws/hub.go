@@ -56,6 +56,8 @@ func (h *Hub) Start() {
 			message := broadcast.Message
 			//对所有注册过的用户进行广播
 			sendID := broadcast.Client.SendID
+			//循环找到sendID和id匹配
+			//TODO 使用rabbitmq优化
 			for id, conn := range h.Clients {
 				if id != sendID {
 					continue
