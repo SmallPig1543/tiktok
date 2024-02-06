@@ -31,7 +31,6 @@ func ServerWs(ctx context.Context, c *app.RequestContext) {
 			Conn:    conn,
 		}
 		Manager.Register <- client
-		//TODO 用户刚上线时，先去消息队列获取用户离线时的消息
 		list, err := rabbitmq.Consume(uid)
 		if err != nil {
 			return
