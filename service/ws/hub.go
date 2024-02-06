@@ -3,6 +3,8 @@ package ws
 import (
 	"github.com/hertz-contrib/websocket"
 	"sync"
+	"tiktok/dal/rabbitmq"
+	"tiktok/pkg/util"
 )
 
 var Manager = NewHub()
@@ -42,11 +44,9 @@ func (h *Hub) Start() {
 	for {
 		select {
 		case client := <-h.Register: //注册用户
-
 			h.Clients[client.Uid] = client
 			_ = client.Conn.WriteMessage(websocket.TextMessage, []byte("已连接至服务器"))
 		case client := <-h.Unregister:
-
 			_ = client.Conn.WriteMessage(websocket.TextMessage, []byte("连接已断开"))
 			if _, ok := h.Clients[client.Uid]; ok {
 				delete(h.Clients, client.Uid)
@@ -54,19 +54,21 @@ func (h *Hub) Start() {
 			}
 		case broadcast := <-h.Broadcast:
 			message := broadcast.Message
-			//对所有注册过的用户进行广播
 			sendID := broadcast.Client.SendID
-			//循环找到sendID和id匹配
-			//TODO 使用rabbitmq优化
-			for id, conn := range h.Clients {
-				if id != sendID {
-					continue
-				}
+			//如果用户在注册范围内，那么直接将消息发送过去
+			if client, ok := h.Clients[sendID]; ok {
 				select {
-				case conn.Message <- message:
+				case client.Message <- message:
 				default:
-					close(conn.Message)
-					delete(Manager.Clients, conn.Uid)
+					close(client.Message)
+					delete(Manager.Clients, client.Uid)
+				}
+			} else {
+				//如果不在，则将消息发送到消息队列rabbitmq
+				err := rabbitmq.PublishMsg(message, sendID)
+				if err != nil {
+					util.LogrusObj.Error("发送失败")
+					return
 				}
 			}
 		}

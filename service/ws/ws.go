@@ -5,6 +5,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/websocket"
 	"strconv"
+	"tiktok/dal/rabbitmq"
 	"tiktok/pkg/ctl"
 	"tiktok/pkg/util"
 )
@@ -30,6 +31,14 @@ func ServerWs(ctx context.Context, c *app.RequestContext) {
 			Conn:    conn,
 		}
 		Manager.Register <- client
+		//TODO 用户刚上线时，先去消息队列获取用户离线时的消息
+		list, err := rabbitmq.Consume(uid)
+		if err != nil {
+			return
+		}
+		for _, v := range list {
+			client.Message <- v
+		}
 		go client.WriteMsg()
 		client.GetMsg()
 	})

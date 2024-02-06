@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hertz-contrib/websocket"
-	"log"
 	"tiktok/pkg/util"
 )
 
@@ -26,7 +25,6 @@ func (c *Client) GetMsg() {
 		_ = c.Conn.Close()
 	}()
 	for {
-		c.Conn.PongHandler()
 		msg := &Message{}
 		_, msgBuf, err := c.Conn.ReadMessage()
 		if err != nil {
@@ -35,13 +33,12 @@ func (c *Client) GetMsg() {
 			_ = c.Conn.Close()
 			return
 		}
-		err = json.Unmarshal(msgBuf, &msg)
-		log.Println(msg.Content)
+		_ = json.Unmarshal(msgBuf, &msg)
+		util.LogrusObj.Info(msg.Content)
 		Manager.Broadcast <- &Broadcast{
 			Client:  c,
-			Message: []byte(msg.Content),
+			Message: msgBuf,
 		}
-
 	}
 }
 
@@ -51,7 +48,6 @@ func (c *Client) WriteMsg() {
 	}()
 	for {
 		select {
-		//写之前先接收数据
 		case message, ok := <-c.Message:
 			if !ok {
 				//没有消息就关掉通道
@@ -62,7 +58,6 @@ func (c *Client) WriteMsg() {
 				From:    c.Uid,
 				Content: fmt.Sprintf("%s", string(message)),
 			}
-			util.LogrusObj.Debug(replyMsg.Content)
 			msg, _ := json.Marshal(replyMsg)
 			_ = c.Conn.WriteMessage(websocket.TextMessage, msg)
 		}

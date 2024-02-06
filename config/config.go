@@ -54,6 +54,8 @@ type Es struct {
 type Rabbitmq struct {
 	RabbitmqUser     string `mapstructure:"rabbitmqUserName"`
 	RabbitmqPassword string `mapstructure:"rabbitmqPassword"`
+	RabbitmqHost     string `mapstructure:"rabbitmqHost"`
+	RabbitmqPort     string `mapstructure:"rabbitmqPort"`
 }
 
 func InitConfig() {

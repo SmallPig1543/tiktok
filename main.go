@@ -8,6 +8,7 @@ import (
 	"tiktok/dal/cache"
 	"tiktok/dal/db"
 	"tiktok/dal/es"
+	"tiktok/dal/rabbitmq"
 	"tiktok/pkg/util"
 	"tiktok/service/ws"
 )
@@ -17,6 +18,7 @@ func init() {
 	config.InitConfig()
 	dao.InitMySQL()
 	cache.LinkRedis()
+	rabbitmq.LinkRabbitmq()
 	es.LinkEs()
 	util.OssInit()
 }

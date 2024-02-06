@@ -33,3 +33,5 @@ es:
 rabbitmq:
   rabbitmqUserName: "root"
   rabbitmqPassword: "123456"
+  rabbitmqHost: "172.19.0.6"
+  rabbitmqPort: "5672"
