@@ -15,16 +15,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./main
 WORKDIR /app
 
 
-RUN mkdir publish
-RUN cp main publish
-RUN cp -r config publish
-
 FROM alpine:latest
 
 
 WORKDIR /app
 
-COPY --from=builder /app/publish .
+COPY --from=builder /app .
 
 EXPOSE 10001
 

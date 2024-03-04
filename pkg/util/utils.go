@@ -27,12 +27,13 @@ func IsVideo(data *multipart.FileHeader) bool {
 		LogrusObj.Debug(err)
 		return false
 	}
+
 	return filetype.IsVideo(buffer)
 }
 
 func SaveFile(data *multipart.FileHeader, storePath string) (err error) {
 	//打开本地文件
-	dist, err := os.OpenFile(storePath, os.O_RDWR|os.O_CREATE, 0666)
+	dist, err := os.Create(storePath)
 	if err != nil {
 		return
 	}
