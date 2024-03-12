@@ -1,18 +1,18 @@
 
 system:
   domain: "tiktok"
-  host: "172.19.0.4"
+  host: "127.0.0.1"
   port: "10001"
 
 mysql:
   userName: "root"
   mysqlPassword: "123456"
   dbName: "tiktok"
-  dbHost: "172.19.0.10"
+  dbHost: "mysql"
   dbPort: "3306"
 
 redis:
-  redisHost: "172.19.0.2"
+  redisHost: "redis"
   redisPort: "6379"
   redisPassword: "123456"
   redisDbName: 2
@@ -27,11 +27,11 @@ oss:
 es:
   esUserName: "elastic"
   esPassword: "123456"
-  esHost: "172.19.0.3"
+  esHost: "es"
   esPort: "9200"
 
 rabbitmq:
   rabbitmqUserName: "root"
   rabbitmqPassword: "123456"
-  rabbitmqHost: "172.19.0.6"
+  rabbitmqHost: "rabbitmq"
   rabbitmqPort: "5672"

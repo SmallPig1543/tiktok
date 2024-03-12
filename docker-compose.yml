@@ -1,5 +1,9 @@
 version: '3'
 
+networks:
+  mynetwork:
+    driver: bridge
+
 services:
   mysql:
     container_name: mysql
@@ -12,8 +16,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      mynetwork:
-        ipv4_address: 172.19.0.10
+      - mynetwork
 
   redis:
     container_name: redis
@@ -23,8 +26,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      mynetwork:
-        ipv4_address: 172.19.0.2
+      - mynetwork
 
   elasticsearch:
     container_name: es
@@ -39,15 +41,14 @@ services:
       - "9200:9200"
       - "9300:9300"
     networks:
-      mynetwork:
-        ipv4_address: 172.19.0.3
+      - mynetwork
 
 
   kibana:
     container_name: kibana
     image: kibana:7.12.0
     environment:
-      ELASTICSEARCH_HOSTS: "http://172.19.0.3:9200"#应该输入的是容器的ip
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
     volumes:
       - /home/smallpig/docker/kibana/config:/usr/share/kibana/config
     ports:
@@ -55,8 +56,7 @@ services:
     depends_on:
       - elasticsearch
     networks:
-      mynetwork:
-        ipv4_address: 172.19.0.4
+      - mynetwork
 
 
   rabbitmq:
@@ -71,26 +71,18 @@ services:
     volumes:
       - /home/smallpig/docker/rabbitmq/data:/var/lib/rabbitmq
     networks:
-      mynetwork:
-        ipv4_address: 172.19.0.6
-
+      - mynetwork
   app:
     build:
       context: .
     ports:
       - "10001:10001"
     networks:
-      mynetwork:
-        ipv4_address: 172.19.0.5
+      - mynetwork
     depends_on:
       - mysql
       - redis
       - elasticsearch
       - rabbitmq
 
-networks:
-  mynetwork:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.19.0.0/16
+
