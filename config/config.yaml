@@ -1,0 +1,41 @@
+system:
+  domain: "tiktok"
+  host: "127.0.0.1"
+  port: "10001"
+
+mysql:
+  userName: "root"
+  mysqlPassword: "123456"
+  dbName: "tiktok"
+  dbHost: "127.0.0.1"
+  dbPort: "3306"
+
+redis:
+  redisHost: "127.0.0.1"
+  redisPort: "6379"
+  redisPassword: "123456"
+  redisDbName: 2
+
+oss:
+  OSS_END_POINT: "oss-cn-hongkong.aliyuncs.com"
+  OSS_ACCESS_KEY_ID: "LTAI5tB7Jjsxa6GdseViWqRE"
+  OSS_ACCESS_KEY_SECRET: "ABrFBE62QML2oiBeJe0j7QBQm0ADrJ"
+  OSS_BUCKET: "videoweb-test"
+
+
+
+es:
+  esUserName: "elastic"
+  esPassword: "123456"
+  esHost: "127.0.0.1"
+  esPort: "9200"
+
+rabbitmq:
+  rabbitmqUserName: "root"
+  rabbitmqPassword: "123456"
+  rabbitmqHost: "127.0.0.1"
+  rabbitmqPort: "5672"
+
+etcd:
+  etcdHost: "127.0.0.1"
+  etcdPort: "2379"

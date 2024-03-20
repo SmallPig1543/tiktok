@@ -1,0 +1,96 @@
+version: '3'
+
+networks:
+  mynetwork:
+    driver: bridge
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: tiktok
+    volumes:
+      - /home/smallpig/docker/mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - mynetwork
+
+  redis:
+    container_name: redis
+    image: redis:7.2.3
+    volumes:
+      - /home/smallpig/docker/redis/data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - mynetwork
+
+  elasticsearch:
+    container_name: es
+    image: elasticsearch:7.12.0
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - /home/smallpig/docker/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /home/smallpig/docker/es/data:/usr/share/elasticsearch/data
+      - /home/smallpig/docker/es/plugins:/usr/share/elasticsearch/plugins
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - mynetwork
+
+
+  kibana:
+    container_name: kibana
+    image: kibana:7.12.0
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+    volumes:
+      - /home/smallpig/docker/kibana/config:/usr/share/kibana/config
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - mynetwork
+
+
+  rabbitmq:
+    image: rabbitmq:3.12.12-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=123456
+    ports:
+      - "5672:5672"  # AMQP
+      - "15672:15672"  # RabbitMQ management UI
+    volumes:
+      - /home/smallpig/docker/rabbitmq/data:/var/lib/rabbitmq
+    networks:
+      - mynetwork
+
+  etcd:
+    container_name: etcd
+    image: quay.io/coreos/etcd:v3.5.0
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    ports:
+      - "2379:2379"
+    networks:
+      - mynetwork
+  etcd-browser:
+    container_name: etcd-browser
+    image: rustyx/etcdv3-browser:latest
+    ports:
+      - "8804:8081"
+    environment:
+      - ETCD=etcd:2379
+      - EDITABLE=1
+    depends_on:
+      - etcd
+    networks:
+      - mynetwork
+
